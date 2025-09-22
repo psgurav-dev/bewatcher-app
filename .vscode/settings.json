@@ -1,4 +1,6 @@
 {
+	// ---------- Editor ----------
+	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit",
 		"source.organizeImports": "explicit",
@@ -6,5 +8,68 @@
 		"workbench.tree.indent": 4,
 		"editor.inlayHints.fontFamily": "",
 		"editor.fontFamily": "Fira Code Medium, Fira Code, Consolas, 'Courier New', monospace"
+	},
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": false,
+	// "editor.renderWhitespace": "boundary",
+	"editor.minimap.enabled": true,
+	"editor.wordWrap": "on",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+
+	// ---------- Files ----------
+	"files.eol": "\n",
+	"files.autoSave": "onFocusChange",
+
+	// ---------- JavaScript / TypeScript ----------
+	"javascript.format.enable": false,
+	"typescript.format.enable": false,
+	"javascript.preferences.quoteStyle": "single",
+	"typescript.preferences.quoteStyle": "single",
+
+	// ---------- ESLint / Prettier ----------
+	"eslint.alwaysShowStatus": true,
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"prettier.singleQuote": true,
+	"prettier.trailingComma": "all",
+	"prettier.arrowParens": "always",
+	"prettier.printWidth": 100,
+	"prettier.tabWidth": 2,
+	"prettier.endOfLine": "lf",
+
+	// ---------- React Native / Expo ----------
+	"react-native-tools.packager.port": 8081,
+	"react-native-tools.logging.level": "info",
+	"react-native-tools.runArguments": ["--no-packager"],
+	"react-native-tools.fastRefresh": true,
+	"react-native-tools.autoAttachDebugger": true,
+
+	// ---------- Terminal ----------
+	"terminal.integrated.shell.osx": "/bin/zsh",
+	"terminal.integrated.fontSize": 14,
+	"terminal.integrated.scrollback": 10000,
+
+	// ---------- Git ----------
+	"git.enableSmartCommit": true,
+	"git.autofetch": true,
+
+	// ---------- Search ----------
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/ios": true,
+		"**/android": true,
+		"**/.expo": true,
+		"**/.git": true
+	},
+
+	// ---------- JSON / Settings ----------
+	"json.schemas": [
+		{
+			"fileMatch": ["/app.json", "/app.config.json"],
+			"url": "https://json.schemastore.org/appjson"
+		}
+	],
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}
 }
