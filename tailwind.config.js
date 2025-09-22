@@ -8,6 +8,10 @@ module.exports = {
 			fontFamily: {
 				poppins: ["Poppins", "sans-serif"],
 				montserrat: ["Montserrat", "sans-serif"],
+				zalando: ["Zalando Sans Expanded", "sans-serif"],
+				firacode: ["Fira Code", "monospace"],
+				manrope: ["Manrope", "sans-serif"],
+				bricolage: ["Bricolage Grotesque", "sans-serif"],
 			},
 			colors: {
 				primary: {

@@ -8,14 +8,14 @@ import Animated, {
 	useAnimatedScrollHandler,
 	useAnimatedStyle,
 	useSharedValue,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 
 const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.65;
 
 export default function MovieCarousel({
 	carousel_movie_data,
-	scrollY
+	scrollY,
 }: {
 	carousel_movie_data: Movie[];
 	scrollY: SharedValue<number>;
@@ -25,32 +25,19 @@ export default function MovieCarousel({
 	const onScroll = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			scrollX.value = event.contentOffset.x;
-
 		},
 	});
 
-
 	const containerAnimatedStyle = useAnimatedStyle(() => {
-		const opacity = interpolate(
-			scrollY.value,
-			[0, 100],
-			[1, 0.5],
-			Extrapolation.CLAMP
-		);
+		const opacity = interpolate(scrollY.value, [0, 100], [1, 0.5], Extrapolation.CLAMP);
 
-		const scale = interpolate(
-			scrollY.value,
-			[0, 100],
-			[1, 0.9],
-			Extrapolation.CLAMP
-		);
+		const scale = interpolate(scrollY.value, [0, 100], [1, 0.9], Extrapolation.CLAMP);
 
 		return {
 			opacity,
 			transform: [{ scale }],
 		};
 	});
-
 
 	return (
 		<Animated.FlatList
@@ -67,25 +54,21 @@ export default function MovieCarousel({
 				paddingTop: 20,
 				marginTop: 25,
 				gap: 18,
-		
-
 			}}
 			style={containerAnimatedStyle}
 			onScroll={onScroll}
 			scrollEventThrottle={16}
-			renderItem={({ item, index }) => (
-				<MovieCard item={item} index={index} scrollX={scrollX} />
-			)}
+			renderItem={({ item, index }) => <MovieCard item={item} index={index} scrollX={scrollX} />}
 			ListEmptyComponent={() => (
 				<View
 					style={{
 						flex: 1,
-						alignItems: "center",
-						justifyContent: "center",
+						alignItems: 'center',
+						justifyContent: 'center',
 						padding: 16,
 					}}
 				>
-					<Text style={{ color: "#6B7280", }}>No movies available.</Text>
+					<Text style={{ color: '#6B7280' }}>No movies available.</Text>
 				</View>
 			)}
 		/>
@@ -107,12 +90,7 @@ function MovieCard({
 			index * (CARD_WIDTH + 8),
 			(index + 1) * (CARD_WIDTH + 8),
 		];
-		const scale = interpolate(
-			scrollX.value,
-			inputRange,
-			[0.85, 1, 0.85],
-			Extrapolation.CLAMP
-		);
+		const scale = interpolate(scrollX.value, inputRange, [0.85, 1, 0.85], Extrapolation.CLAMP);
 		return {
 			transform: [{ scale }],
 		};
@@ -129,7 +107,7 @@ function MovieCard({
 						padding: 8,
 
 						marginLeft: index === 0 ? 18 : 0,
-						marginRight: index === (carousel_movie_data.length - 1) ? 18 : 0,
+						marginRight: index === carousel_movie_data.length - 1 ? 18 : 0,
 					},
 					animatedStyle,
 				]}
@@ -138,10 +116,10 @@ function MovieCard({
 					source={{
 						uri: item.poster_path
 							? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-							: "https://via.placeholder.com/150",
+							: 'https://via.placeholder.com/150',
 					}}
 					style={{
-						width: "100%",
+						width: '100%',
 						height: 320,
 						borderRadius: 8,
 						marginBottom: 8,
@@ -149,16 +127,14 @@ function MovieCard({
 					resizeMode="cover"
 				/>
 				<Text
-				
 					style={{
 						fontSize: 32,
 						marginTop: 2,
-						fontWeight: "bold",
-						color: "#F1F5F9",
-						textAlign: "center",
-						fontFamily : "Poppins, sans-serif"
+						fontWeight: 'bold',
+						color: '#F1F5F9',
+						textAlign: 'center',
+						fontFamily: 'Poppins, sans-serif',
 					}}
-		
 				>
 					{item.title}
 				</Text>
