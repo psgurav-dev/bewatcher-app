@@ -6,6 +6,7 @@ import { useFetchTMDB } from '@/hooks/useFetch';
 import { getTodayDate } from '@/lib/utils';
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
+import Animated, { SharedValue } from 'react-native-reanimated';
 import MovieCard from './movie-card';
 
 const RenderItems = ({ item }: { item: Movie }) => {
@@ -48,6 +49,7 @@ export const NowPlayingMoviesList = () => {
 		queryKey: [`now_playing_${getTodayDate()}`],
 		queryFn: () => useFetchTMDB(url),
 		staleTime: 8.64e7,
+		gcTime: 1000 * 60 * 30, // 30 minutes
 	});
 
 	return (
@@ -71,7 +73,13 @@ export const NowPlayingMoviesList = () => {
 	);
 };
 
-export const Popular = () => {
+export const Popular = ({
+	scrollY,
+	carouselHeight,
+}: {
+	scrollY: SharedValue<number>;
+	carouselHeight: any;
+}) => {
 	const url = new URL(`${MOVIE_DB_BASE_URL}/movie/popular`);
 	url.searchParams.append('api_key', MOVIE_DB_API_KEY);
 	url.searchParams.append('language', 'en-US');
@@ -103,6 +111,35 @@ export const Popular = () => {
 				</View>
 			)}
 			numColumns={3}
+			ListHeaderComponent={
+				<Animated.View
+					style={{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						backgroundColor: 'black',
+						transform: [
+							{
+								translateY: scrollY.value > carouselHeight ? 0 : -100, // show only after scrolling past carousel
+							},
+						],
+					}}
+				>
+					<Text
+						style={{
+							fontWeight: '600',
+							fontFamily: 'Zalondo',
+							fontSize: 32,
+							color: '#fff',
+							padding: 8,
+						}}
+					>
+						Popular
+					</Text>
+				</Animated.View>
+			}
+			stickyHeaderIndices={[0]} // <-- use 0 for ListHeaderComponent
 		/>
 	);
 };

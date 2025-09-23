@@ -40,7 +40,7 @@ export function useFetch<T = any>(url: string | URL, options?: UseFetchOptions) 
 }
 
 export async function useFetchTMDB(url: URL) {
-	// console.log('Fetching movie details from API...');
+	console.log('Fetching movie details from API...');
 	const res = await fetch(url);
 	if (!res.ok) throw new Error('Failed to fetch movies');
 	return res.json();
