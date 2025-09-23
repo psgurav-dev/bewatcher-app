@@ -23,15 +23,22 @@ const MovieDetailScreen = () => {
 		data: movie,
 		isLoading: loading,
 		error,
+		refetch,
 	} = useCacheQuery({
-		queryKey: [`movie_detail${id}`],
+		queryKey: [`movie_detail_${id}`],
 		queryFn: fetchMovieDetails,
 		staleTime: 8.64e7,
 	});
+
+	const handleRetry = () => {
+		refetch();
+	};
+
 	if (error) {
-		console.log('error', error);
+		console.log('Movie detail error:', error);
 	}
-	return movie ? <MovieDetails item={movie} /> : null;
+
+	return <MovieDetails item={movie} loading={loading} error={error} onRetry={handleRetry} />;
 };
 
 export default MovieDetailScreen;

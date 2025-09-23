@@ -30,9 +30,7 @@ export default function MovieCarousel({
 
 	const containerAnimatedStyle = useAnimatedStyle(() => {
 		const opacity = interpolate(scrollY.value, [0, 100], [1, 0.5], Extrapolation.CLAMP);
-
 		const scale = interpolate(scrollY.value, [0, 100], [1, 0.9], Extrapolation.CLAMP);
-
 		return {
 			opacity,
 			transform: [{ scale }],
@@ -105,7 +103,7 @@ function MovieCard({
 						height: 380,
 						borderRadius: 12,
 						padding: 8,
-
+						marginBottom: 2,
 						marginLeft: index === 0 ? 18 : 0,
 						marginRight: index === carousel_movie_data.length - 1 ? 18 : 0,
 					},
@@ -128,12 +126,12 @@ function MovieCard({
 				/>
 				<Text
 					style={{
-						fontSize: 32,
-						marginTop: 2,
-						fontWeight: 'bold',
+						fontSize: 18,
+
 						color: '#F1F5F9',
 						textAlign: 'center',
-						fontFamily: 'Poppins, sans-serif',
+						fontWeight: 500,
+						fontFamily: 'ZalondoItalic',
 					}}
 				>
 					{item.title}

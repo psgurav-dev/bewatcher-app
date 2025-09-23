@@ -3,15 +3,15 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
+import { persistor, store } from '@/store';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import './global.css';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from '@/store';
+import './global.css';
 
 SplashScreen.preventAutoHideAsync();
 

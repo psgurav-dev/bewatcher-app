@@ -6,7 +6,16 @@ import { fetchPopularMovies, fetchTrendingMovies } from '@/store/slices/moviesSl
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useEffect } from 'react';
 import { ActivityIndicator, FlatList, SectionList, Text, View } from 'react-native';
-import { useSharedValue } from 'react-native-reanimated';
+import Animated, {
+	Extrapolate,
+	interpolate,
+	useAnimatedStyle,
+	useSharedValue,
+} from 'react-native-reanimated';
+
+const HEADER_MAX_PT = 8; // paddingTop when at top
+const HEADER_MIN_PT = 32; // paddingTop when collapsed
+const COLLAPSE_DISTANCE = 120; // how much scroll to collapse over
 
 export default function HomeScreen() {
 	const dispatch = useAppDispatch();
@@ -29,14 +38,44 @@ export default function HomeScreen() {
 
 	const sectionsForGrid = [
 		{
-			title: 'Popular',
-			data: [popularMovies],
-		},
-		{
 			title: 'Trending',
 			data: [trendingMovies],
 		},
+		{
+			title: 'Popular',
+			data: [popularMovies],
+		},
 	];
+
+	const SectionHeader = ({ title, scrollY }: { title: string; scrollY: any }) => {
+		const titleAnimStyle = useAnimatedStyle(() => ({
+			paddingTop: interpolate(
+				scrollY.value,
+				[0, COLLAPSE_DISTANCE],
+				[HEADER_MAX_PT, HEADER_MIN_PT],
+				Extrapolate.CLAMP,
+			),
+		}));
+
+		return (
+			<View className="bg-black/80 p-4">
+				{/* remove static pt-8 so animated padding isn’t overridden */}
+				<Animated.Text
+					style={[
+						{
+							fontWeight: '600',
+							fontFamily: 'Zalondo',
+							fontSize: 32,
+							color: '#fff',
+						},
+						titleAnimStyle,
+					]}
+				>
+					{title}
+				</Animated.Text>
+			</View>
+		);
+	};
 
 	const renderSectionListItems = ({ item }: { item: Movie[] }) => {
 		return (
@@ -86,19 +125,7 @@ export default function HomeScreen() {
 			stickySectionHeadersEnabled
 			renderItem={renderSectionListItems}
 			renderSectionHeader={({ section }) => (
-				<View className="bg-black/80 p-4">
-					<Text
-						className="pt-8"
-						style={{
-							fontWeight: '600',
-							fontFamily: 'Zalondo',
-							fontSize: 32,
-							color: '#fff',
-						}}
-					>
-						{section.title}
-					</Text>
-				</View>
+				<SectionHeader title={section.title} scrollY={scrollY} />
 			)}
 			ListHeaderComponent={ListHeaderComponent}
 			contentContainerStyle={{ paddingBottom: 25, backgroundColor: 'black' }}
