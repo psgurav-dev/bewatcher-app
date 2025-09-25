@@ -11,7 +11,7 @@
 		"newArchEnabled": true,
 		"ios": {
 			"supportsTablet": true,
-			"bundleIdentifier": "com.anonymous.bewatcher",
+			"bundleIdentifier": "com.psgurav.bewatcher",
 			"infoPlist": {
 				"ITSAppUsesNonExemptEncryption": false
 			}
@@ -54,8 +54,8 @@
 		},
 		"extra": {
 			"router": {},
-			"eas": { "projectId": "1991348e-17ed-47b9-b2d1-d083cd9db6b4" }
+			"eas": { "projectId": "c629840b-14ed-4da1-8350-43398867088d" }
 		},
-		"owner": "prasad.g"
+		"owner": "psgurav04"
 	}
 }
