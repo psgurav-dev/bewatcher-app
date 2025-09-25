@@ -1,7 +1,8 @@
 {
-  "expo": {
+	"expo": {
 		"name": "bewatcher",
 		"slug": "bewatcher",
+		"entryPoint": "expo-router/entry",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
@@ -50,11 +51,11 @@
 		"experiments": {
 			"typedRoutes": true,
 			"reactCompiler": true
-		}
-		// "extra": {
-		// 	"router": {},
-		// 	"eas": { "projectId": "1991348e-17ed-47b9-b2d1-d083cd9db6b4" }
-		// },
-		// "owner": "prasad.g"
+		},
+		"extra": {
+			"router": {},
+			"eas": { "projectId": "1991348e-17ed-47b9-b2d1-d083cd9db6b4" }
+		},
+		"owner": "prasad.g"
 	}
 }
