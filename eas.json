@@ -1,24 +1,27 @@
 {
-  "cli": {
-    "version": ">= 10.0.0",
-    "appVersionSource": "remote"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "android": { "buildType": "apk" }
-    },
-    "preview": {
-      "distribution": "internal",
-      "android": { "buildType": "apk" }
-    },
-    "production": {
-      "autoIncrement": true,
-      "android": { "buildType": "app-bundle" }
-    }
-  },
-  "submit": {
-    "production": {}
-  }
+	"cli": {
+		"version": ">= 10.0.0"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal"
+		},
+		"preview": {
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk" // 👈 force APK instead of AAB
+			}
+		},
+		"production": {
+			"android": {
+				"buildType": "app-bundle" // default (AAB for Play Store)
+			}
+		},
+		"apk": {
+			"android": {
+				"buildType": "apk" // 👈 this makes a universal APK
+			}
+		}
+	}
 }
