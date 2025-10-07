@@ -2,11 +2,15 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
+
+	// const isDevelopment = process.env.NODE_ENV === 'development';
 	const tabs = [
 		{ name: "home", title: "Home", icon: "home" as const },
 		{ name: "settings", title: "Settings", icon: "cog" as const },
 		{ name: "profile", title: "Profile", icon: "user" as const },
+
 	]
+
 	return (
 		<Tabs
 			screenOptions={{

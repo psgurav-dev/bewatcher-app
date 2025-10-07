@@ -1,6 +1,6 @@
-import { carousel_movie_data } from "@/constants/sample-data";
-import { Movie } from "@/constants/types";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import { carousel_movie_data } from '@/constants/sample-data';
+import { Movie } from '@/constants/types';
+import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
 	Extrapolation,
 	interpolate,
@@ -10,7 +10,7 @@ import Animated, {
 	useSharedValue,
 } from 'react-native-reanimated';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.65;
 
 export default function MovieCarousel({
