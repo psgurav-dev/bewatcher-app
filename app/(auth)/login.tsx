@@ -2,9 +2,10 @@
 import { View, Text, Pressable, Image } from 'react-native';
 import { useSSO } from '@clerk/clerk-expo';
 import * as AuthSession from 'expo-auth-session';
-import * as WebBrowser from 'expo-web-browser';
+import { account, client } from '@/lib/appwrite';
 import { AnimatedList } from '@/components/animated-movie-bg';
-
+import * as WebBrowser from "expo-web-browser";
+import * as Linking from "expo-linking";
 
 import Animated, {
 	useSharedValue,
@@ -15,6 +16,7 @@ import Animated, {
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { OAuthProvider } from 'appwrite';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 WebBrowser.maybeCompleteAuthSession();
@@ -72,6 +74,30 @@ export const GoogleLoginButton = ({ onPress, loading = false }: { onPress: () =>
 		</AnimatedPressable>
 	);
 };
+
+export async function loginWithGoogle() {
+	try {
+		// The redirect URL Appwrite will send user back to
+		const redirectUrl = Linking.createURL("/oauth");
+
+		const authUrl = account.createOAuth2Session(
+			OAuthProvider.Google,
+			redirectUrl, // success
+			redirectUrl  // failure (you can customize)
+		);
+
+		// Open the browser for login
+		// await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
+
+		// Now your user should be logged in!
+		const user = await account.get();
+		console.log("✅ Logged in:", user);
+		return user;
+	} catch (error) {
+		console.error("Google OAuth login failed:", error);
+		throw error;
+	}
+}
 
 
 const LogIn = () => {

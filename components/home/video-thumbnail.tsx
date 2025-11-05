@@ -67,7 +67,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 			</View>
 		);
 	}
-	// console.log(thumbnailOptions[currentFallbackIndex])
+	console.log(thumbnailOptions[currentFallbackIndex])
 	return (
 		<View className={`relative bg-gray-800 rounded-lg ${className}`} style={style}>
 			<Image

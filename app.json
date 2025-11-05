@@ -77,7 +77,8 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9998bf69-f055-4f88-95ba-854fa567aaf5"
+        "projectId": "9998bf69-f055-4f88-95ba-854fa567aaf5",
+        "appwriteProjectId": "65e89fbbcffd6aa4c4a4"
       }
     },
     "owner": "dev.psgurav"

@@ -1,14 +1,11 @@
 import { Movie } from '@/constants/types';
 import { useRouter } from 'expo-router';
 
-import React from 'react';
 import { Dimensions, Image, Pressable, Text, View } from 'react-native';
 const itemWidth = Dimensions.get('window').width / 3;
 
 const MovieCard = ({ item }: { item: Movie }) => {
 	const router = useRouter()
-
-
 	return (
 		<Pressable onPress={() => router.push(`/movie/${item.id}`)}>
 			<View

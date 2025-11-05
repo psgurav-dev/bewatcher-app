@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image, Dimensions, Button } from "react-native";
+import { Text, View, Image, Dimensions, Button, Pressable, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import Animated, {
 	useSharedValue,
@@ -11,6 +11,8 @@ import Animated, {
 	withSequence,
 	withDelay,
 } from "react-native-reanimated";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { router, useRouter } from "expo-router";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -195,7 +197,7 @@ const MarqueeRow = ({
 // Main animated background component
 export const AnimatedMovieBackground = () => {
 	const popularMovies = useSelector((state: any) => state.movies.popularMovies);
-
+	console.log("popularMovies", popularMovies)
 	if (!popularMovies || popularMovies.length === 0) {
 		return (
 			<View className="flex-1 items-center justify-center bg-gray-900">
@@ -235,8 +237,21 @@ export const AnimatedMovieBackground = () => {
 	const movieRows = createMovieRows();
 
 	return (
-		<View className="flex-1 w-full bg-gradient-to-b from-black to-transparent overflow-hidden">
+		<View className="flex-1 w-full bg-gradient-to-b from-black to-transparent overflow-hidden relative">
 			{/* Animated background rows */}
+			<TouchableOpacity
+				className="border border-white rounded-full p-2 absolute top-10 left-4 z-30 px-3"
+				style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+				<FontAwesome
+					name="arrow-left"
+					size={24}
+					color="white"
+
+					onPress={() => {
+						router.push("/(tabs)/home");
+					}}
+				/>
+			</TouchableOpacity>
 
 			{movieRows.map((row) => (
 				<MarqueeRow

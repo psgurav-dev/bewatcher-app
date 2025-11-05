@@ -5,12 +5,13 @@ import {
   View,
   Text,
   LayoutChangeEvent,
+  Platform,
 } from 'react-native';
 import { BottomTabBarProps, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import Animated, { useAnimatedStyle, withTiming, useDerivedValue } from 'react-native-reanimated';
-import Lottie from 'lottie-react-native';
+
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 
@@ -23,13 +24,27 @@ type TabBarComponentProps = {
 
 const TabBarComponent = ({ active, options, onLayout, onPress }: TabBarComponentProps) => {
   const ref = useRef(null);
+  const [isError, setIsError] = React.useState(false);
 
   useEffect(() => {
-    if (active && ref?.current) {
-      // @ts-ignore
-      ref.current.play();
-    }
-  }, [active]);
+    if (!active || isError) return;
+
+    const playAnimation = async () => {
+      try {
+        if (ref?.current) {
+    // @ts-ignore
+          await ref.current.reset();
+          // @ts-ignore
+          await ref.current.play();
+        }
+      } catch (error) {
+        console.warn('Failed to play Lottie animation:', error);
+        setIsError(true);
+      }
+    };
+
+    playAnimation();
+  }, [active, isError]);
 
   const animatedComponentCircleStyles = useAnimatedStyle(() => {
     return {
@@ -64,6 +79,12 @@ const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, des
   const { bottom } = useSafeAreaInsets();
 
   const reducer = (state: any, action: { x: number; index: number }) => {
+    const existing = state.find((item: any) => item.index === action.index);
+    if (existing) {
+      return state.map((item: any) =>
+        item.index === action.index ? { ...item, x: action.x } : item
+      );
+    }
     return [...state, { x: action.x, index: action.index }];
   };
 
@@ -121,6 +142,14 @@ const AnimatedTabBar = ({ state: { index: activeIndex, routes }, navigation, des
 const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: '#1E293B',
+    ...Platform.select({
+      android: {
+        elevation: 0,
+      },
+      ios: {
+        shadowOpacity: 0,
+      },
+    }),
   },
   activeBackground: {
     position: 'absolute',

@@ -3,7 +3,7 @@ import { MOVIE_DB_API_KEY, MOVIE_DB_BASE_URL } from '@/constants/config';
 import { useCacheQuery } from '@/hooks/useCacheQuery';
 
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+
 
 const MovieDetailScreen = () => {
 	const { id } = useLocalSearchParams();

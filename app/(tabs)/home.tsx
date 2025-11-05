@@ -20,14 +20,11 @@ const COLLAPSE_DISTANCE = 120; // how much scroll to collapse over
 export default function HomeScreen() {
 	const dispatch = useAppDispatch();
 	const scrollY = useSharedValue(0);
-
+	console.log('HomeScreen rendered');
 	const {
 		popularMovies,
 		popularLoading,
-		popularError,
 		trendingMovies,
-		trendingLoading,
-		trendingError,
 	} = useAppSelector((state) => state.movies);
 
 	useEffect(() => {
@@ -63,9 +60,9 @@ export default function HomeScreen() {
 				<Animated.Text
 					style={[
 						{
-							fontWeight: '600',
-							fontFamily: 'Zalondo',
-							fontSize: 32,
+							fontWeight: '500',
+							fontFamily: 'BricolageGrotesque',
+							fontSize: 42,
 							color: '#fff',
 						},
 						titleAnimStyle,

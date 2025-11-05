@@ -3,10 +3,10 @@ import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
 
-	// const isDevelopment = process.env.NODE_ENV === 'development';
 	const tabs = [
 		{ name: "home", title: "Home", icon: "home" as const },
 		{ name: "settings", title: "Settings", icon: "cog" as const },
+		{ name: "search", title: "Search", icon: "search" as const },
 		{ name: "profile", title: "Profile", icon: "user" as const },
 
 	]
@@ -14,9 +14,10 @@ export default function TabsLayout() {
 	return (
 		<Tabs
 			screenOptions={{
-				tabBarActiveTintColor: '#EAB308',
+				tabBarActiveTintColor: '#2640F4',
 				tabBarInactiveTintColor: '#94A3B8',
-				tabBarStyle: { backgroundColor: '#0F172A', borderTopColor: '#1E293B' },
+				tabBarStyle: { backgroundColor: '#131314', borderTopColor: '#0F172A', alignItems: 'center', justifyContent: 'center' },
+				tabBarLabelStyle: { fontSize: 10, fontWeight: '500', marginBottom: 4, fontFamily: 'Manrope', color: "#fff" },
 			}}
 		>
 			{tabs.map((tab) => (

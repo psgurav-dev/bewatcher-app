@@ -15,7 +15,7 @@ const persistConfig = {
 const moviesPersistConfig = {
   key: 'movies',
   storage: AsyncStorage,
-  whitelist: ['favorites', 'watchlist'], // Only persist these fields
+  whitelist: ["popularMovies","trendingMovies"], // Only persist these fields
 };
 
 const rootReducer = combineReducers({

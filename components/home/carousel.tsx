@@ -1,5 +1,6 @@
 import { carousel_movie_data } from '@/constants/sample-data';
 import { Movie } from '@/constants/types';
+import { useState } from 'react';
 import { Dimensions, Image, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
 	Extrapolation,
@@ -21,6 +22,7 @@ export default function MovieCarousel({
 	scrollY: SharedValue<number>;
 }) {
 	const scrollX = useSharedValue(0);
+	const [currentIndex, setCurrentIndex] = useState(0)
 
 	const onScroll = useAnimatedScrollHandler({
 		onScroll: (event) => {
@@ -49,9 +51,11 @@ export default function MovieCarousel({
 			nestedScrollEnabled={true}
 			contentContainerStyle={{
 				paddingHorizontal: 40,
+				paddingRight: 60,
 				paddingTop: 20,
 				marginTop: 25,
-				gap: 18,
+				gap: 8,
+				// backgroundColor: "red"
 			}}
 			style={containerAnimatedStyle}
 			onScroll={onScroll}
@@ -106,6 +110,7 @@ function MovieCard({
 						marginBottom: 2,
 						marginLeft: index === 0 ? 18 : 0,
 						marginRight: index === carousel_movie_data.length - 1 ? 18 : 0,
+						paddingRight: index === carousel_movie_data.length ? 10 : 0
 					},
 					animatedStyle,
 				]}
@@ -126,12 +131,11 @@ function MovieCard({
 				/>
 				<Text
 					style={{
-						fontSize: 18,
-
+						fontSize: 22,
 						color: '#F1F5F9',
 						textAlign: 'center',
 						fontWeight: 500,
-						fontFamily: 'ZalondoItalic',
+						fontFamily: 'BricolageGrotesque',
 					}}
 				>
 					{item.title}
