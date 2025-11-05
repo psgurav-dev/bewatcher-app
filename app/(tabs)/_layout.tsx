@@ -5,7 +5,6 @@ export default function TabsLayout() {
 
 	const tabs = [
 		{ name: "home", title: "Home", icon: "home" as const },
-		{ name: "settings", title: "Settings", icon: "cog" as const },
 		{ name: "search", title: "Search", icon: "search" as const },
 		{ name: "profile", title: "Profile", icon: "user" as const },
 

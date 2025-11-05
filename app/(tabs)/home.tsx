@@ -20,7 +20,7 @@ const COLLAPSE_DISTANCE = 120; // how much scroll to collapse over
 export default function HomeScreen() {
 	const dispatch = useAppDispatch();
 	const scrollY = useSharedValue(0);
-	console.log('HomeScreen rendered');
+
 	const {
 		popularMovies,
 		popularLoading,

@@ -4,8 +4,6 @@ import { Account, Client, Databases, ID, Query } from 'appwrite';
 
 // Appwrite configuration
 
-console.log("DATABASE_ID",DATABASE_ID)
-
 
 // Error messages
 const ERROR_MESSAGES = {

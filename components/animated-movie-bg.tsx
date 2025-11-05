@@ -197,7 +197,6 @@ const MarqueeRow = ({
 // Main animated background component
 export const AnimatedMovieBackground = () => {
 	const popularMovies = useSelector((state: any) => state.movies.popularMovies);
-	console.log("popularMovies", popularMovies)
 	if (!popularMovies || popularMovies.length === 0) {
 		return (
 			<View className="flex-1 items-center justify-center bg-gray-900">
