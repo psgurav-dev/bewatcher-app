@@ -102,7 +102,7 @@ export const fetchPopularMovies = createAsyncThunk(
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      console.log("fetchPopularMovies", data)
+      // console.log("fetchPopularMovies", data)
       return data.results as Movie[];
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch popular movies');
@@ -120,7 +120,7 @@ export const fetchTrendingMovies = createAsyncThunk(
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      console.log("fetchTrendingMovies", data);
+      // console.log("fetchTrendingMovies", data);
       return data.results as Movie[];
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch trending movies');
@@ -135,7 +135,7 @@ export const fetchUserWatchlist = createAsyncThunk(
     try {
       if (!userId) throw new Error('No userId provided');
       const data = await getUserWatchlist(userId);
-      console.log("fetchUserWatchlist", data)
+      // console.log("fetchUserWatchlist", data)
       return data as moviePayload[];
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch watchlist');
@@ -149,7 +149,7 @@ export const fetchUserFavourites = createAsyncThunk(
 		try {
 			if (!userId) throw new Error('No userId provided');
 			const data = await getUserFavourites(userId);
-      console.log("fetchUserFavourites", data)
+      // console.log("fetchUserFavourites", data)
 			return data as moviePayload[];
 		} catch (error: any) {
 			return rejectWithValue(error.message || 'Failed to fetch favourites');
