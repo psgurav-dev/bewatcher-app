@@ -14,6 +14,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import './global.css';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
+import { EXPO_CLERK_KEY } from '@/constants/config';
 
 
 SplashScreen.preventAutoHideAsync();
@@ -95,7 +96,8 @@ export default function RootLayout() {
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
 				<QueryClientProvider client={queryClient}>
-					<ClerkProvider tokenCache={tokenCache}>
+					<ClerkProvider tokenCache={tokenCache} publishableKey={EXPO_CLERK_KEY}
+					>
 						<Stack screenOptions={{ animation: 'none' }}>
 							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 							<Stack.Screen name="movie/[id]" options={{ headerShown: false }} />

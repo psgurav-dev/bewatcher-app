@@ -44,7 +44,5 @@ export type moviePayload = {
 	posterPath?: string;
 	backdropPath?: string;
 	releaseDate?: string;
-	// voteAverage?: number;
-	// overview?: string;
 	
 }
