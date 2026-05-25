@@ -7,15 +7,19 @@ import { persistor, store } from '@/store';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import './global.css';
+import { ClerkProvider } from '@clerk/clerk-expo';
+import { tokenCache } from '@/lib/tokenCache';
+import { EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY } from '@/constants/config';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -29,7 +33,7 @@ export default function RootLayout() {
 	);
 
 	const [isRestoringClient, setIsRestoringClient] = useState(true);
-
+	// Fonts Config
 	const [loaded, error] = useFonts({
 		BricolageGrotesque: require('@/assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque_48pt_Condensed-Bold.ttf'),
 		Manrope: require('@/assets/fonts/Manrope/static/Manrope-Bold.ttf'),
@@ -70,6 +74,7 @@ export default function RootLayout() {
 		}
 	}, [loaded, error, isRestoringClient]);
 
+
 	// Show loading while fonts are loading or query client is being restored
 	if ((!loaded && !error) || isRestoringClient) {
 		return (
@@ -90,10 +95,15 @@ export default function RootLayout() {
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
 				<QueryClientProvider client={queryClient}>
-					<Stack screenOptions={{ animation: 'none' }}>
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						<Stack.Screen name="movie/[id]" options={{ headerShown: false }} />
-					</Stack>
+					<ClerkProvider tokenCache={tokenCache}
+						publishableKey={EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
+					>
+						<Stack screenOptions={{ animation: 'none' }}>
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							<Stack.Screen name="movie/[id]" options={{ headerShown: false }} />
+							<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
+						</Stack>
+					</ClerkProvider>
 				</QueryClientProvider>
 			</PersistGate>
 		</Provider>

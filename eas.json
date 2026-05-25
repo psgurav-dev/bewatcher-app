@@ -1,24 +1,37 @@
 {
-  "cli": {
-    "version": ">= 10.0.0",
-    "appVersionSource": "remote"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "android": { "buildType": "apk" }
-    },
-    "preview": {
-      "distribution": "internal",
-      "android": { "buildType": "apk" }
-    },
-    "production": {
-      "autoIncrement": true,
-      "android": { "buildType": "app-bundle" }
-    }
-  },
-  "submit": {
-    "production": {}
-  }
+	"cli": {
+		"version": ">= 10.0.0"
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal",
+			"env": {
+				"EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c2F2aW5nLWZpbGx5LTY1LmNsZXJrLmFjY291bnRzLmRldiQ"
+			}
+		},
+		"preview": {
+			"distribution": "internal",
+			"android": {
+				"buildType": "apk",
+				"gradleCommand": ":app:assembleRelease",
+				"env": {
+					"ENABLE_NETWORK_SECURITY_CONFIG": "1"
+				}
+			},
+			"env": {
+				"EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c2F2aW5nLWZpbGx5LTY1LmNsZXJrLmFjY291bnRzLmRldiQ"
+			}
+		},
+		"production": {
+			"android": {
+				"buildType": "app-bundle" // default (AAB for Play Store)
+			}
+		},
+		"apk": {
+			"android": {
+				"buildType": "apk" // 👈 this makes a universal APK
+			}
+		}
+	}
 }

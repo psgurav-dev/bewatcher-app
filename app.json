@@ -2,6 +2,7 @@
   "expo": {
     "name": "bewatcher",
     "slug": "bewatcher",
+    "entryPoint": "expo-router/entry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +11,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.bewatcher",
+      "bundleIdentifier": "com.dev.psgurav.bewatcher",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -22,9 +23,36 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "config": {
+        "networkSecurityConfig": "network_security_config"
+      },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.bewatcher"
+      "package": "com.dev.psgurav.bewatcher",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "www.youtube.com"
+            },
+            {
+              "scheme": "vnd.youtube"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "output": "static",
@@ -36,6 +64,7 @@
     ],
     "plugins": [
       "expo-router",
+			"expo-secure-store",
       [
         "expo-splash-screen",
         {
@@ -48,27 +77,7 @@
           }
         }
       ],
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Bricolage_Grotesque/BricolageGrotesque-VariableFont_opsz,wdth,wght.ttf"
-          ],
-          "android": {
-            "fonts": [
-              {
-                "fontFamily": "Bricolage Grotesque",
-                "fontDefinitions": [
-                  {
-                    "path": "./assets/fonts/Bricolage_Grotesque/BricolageGrotesque-VariableFont_opsz,wdth,wght.ttf",
-                    "weight": 800
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -77,9 +86,10 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "aa791059-4e61-4573-8301-8ab6f0c2360b"
+        "projectId": "5104f509-a596-4c22-8cc7-7fb6d0bdefd3",
+        "appwriteProjectId": "65e89fbbcffd6aa4c4a4"
       }
     },
-    "owner": "psgurav"
+    "owner": "prasad_dev04"
   }
 }

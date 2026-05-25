@@ -1,28 +1,35 @@
 import { Genres } from '@/constants/data';
-import { Movie } from '@/constants/types';
-
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	addToFavorites,
-	addToWatchlist,
-	removeFromFavorites,
-	removeFromWatchlist,
-} from '@/store/slices/moviesSlice';
+import { Movie, moviePayload } from '@/constants/types';
+import { useAppSelector } from '@/store/hooks';
+import { useAuth } from '@clerk/clerk-expo';
+import { useRouter } from 'expo-router';
+import { Alert } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
 	Dimensions,
 	Image,
-	ImageBackground,
 	Pressable,
 	ScrollView,
 	Text,
 	View,
 } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, {
+	FadeIn,
+	FadeOut,
+	useAnimatedScrollHandler,
+	useAnimatedStyle,
+	useSharedValue,
+	interpolate,
+	Extrapolate,
+	withDecay,
+} from 'react-native-reanimated';
 import MovieVideos from './movie-videos';
 
+import CollectionButtons from '@/components/movies/collection-btns';
+
 const { width } = Dimensions.get('window');
+const BACKDROP_HEIGHT = 400;
 
 // Loading Skeleton Components
 const SkeletonBox = ({
@@ -144,9 +151,61 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsProps) => {
-	const dispatch = useAppDispatch();
+	// dispatch is not used here; collection actions handled by CollectionButtons
+	const router = useRouter();
+	const { userId } = useAuth();
 	const [genres, setGenres] = React.useState<string[]>([]);
-	const { favorites, watchlist } = useAppSelector((state) => state.movies);
+
+	const { favourites, watchlist } = useAppSelector((state) => state.movies);
+
+	const scrollY = useSharedValue(0);
+
+	const scrollHandler = useAnimatedScrollHandler({
+		onScroll: (event) => {
+			scrollY.value = event.contentOffset.y;
+		},
+	});
+	// Animated style for backdrop with parallax effect
+	const backdropAnimatedStyle = useAnimatedStyle(() => {
+		const translateY = interpolate(
+			scrollY.value,
+			[0, BACKDROP_HEIGHT],
+			[0, -BACKDROP_HEIGHT * 0.5],
+			Extrapolate.CLAMP
+		);
+
+		// Using withDecay for smoother parallax effect
+		// const translateY = withDecay({
+		// 	velocity: scrollY.value,
+		// 	clamp: [-BACKDROP_HEIGHT / 2, 0],
+		// 	rubberBandEffect: true,
+		// });
+
+		const scale = interpolate(
+			scrollY.value,
+			[-BACKDROP_HEIGHT, 0, BACKDROP_HEIGHT],
+			[2, 1, 1],
+			Extrapolate.CLAMP
+		);
+
+		return {
+			transform: [{ translateY }, { scale }],
+		};
+	});
+
+	// Animated style for overlay opacity
+	const overlayAnimatedStyle = useAnimatedStyle(() => {
+		const opacity = interpolate(
+			scrollY.value,
+			[0, BACKDROP_HEIGHT * 0.5],
+			[0.6, 0.9],
+			Extrapolate.CLAMP
+		);
+
+		return {
+			opacity,
+		};
+	});
 
 	// ✅ Always call hooks before conditional returns
 	React.useEffect(() => {
@@ -161,7 +220,7 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 			})
 			.filter(Boolean) as string[];
 		setGenres(genreNames);
-	}, [item?.id]); // or [item] if you prefer
+	}, [item?.id]);
 
 	// Conditional returns AFTER hooks
 	if (loading || !item) return <LoadingSkeleton />;
@@ -169,31 +228,14 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 
 	const credits = item.credits;
 
-	const isFavorite = favorites.includes(item.id);
-	const isInWatchlist = watchlist.includes(item.id);
-
-	const handleToggleFavorite = () => {
-		if (isFavorite) {
-			dispatch(removeFromFavorites(item.id));
-		} else {
-			dispatch(addToFavorites(item.id));
-		}
-	};
-
-	const handleToggleWatchlist = () => {
-		if (isInWatchlist) {
-			dispatch(removeFromWatchlist(item.id));
-		} else {
-			dispatch(addToWatchlist(item.id));
-		}
-	};
+	// We'll use the shared CollectionButtons component for favourites/watchlist actions.
 
 	// Fallback image URLs
 	const backdropImage = item?.backdrop_path
 		? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
 		: item?.poster_path
-		? `https://image.tmdb.org/t/p/original${item.poster_path}`
-		: 'https://via.placeholder.com/500x300/333333/FFFFFF?text=No+Image';
+			? `https://image.tmdb.org/t/p/original${item.poster_path}`
+			: 'https://via.placeholder.com/500x300/333333/FFFFFF?text=No+Image';
 
 	// Helper function to safely get rating
 	const getRating = () => {
@@ -215,158 +257,188 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 	};
 
 	return (
-		<ScrollView className="flex-1 bg-black">
-			{/* Backdrop Image */}
-			<ImageBackground
+		<View className="flex-1 bg-black pb-6">
+			{/* Backdrop Image with Parallax Effect */}
+			<Animated.Image
 				source={{ uri: backdropImage }}
-				style={{ width: '100%', height: 400, margin: 4 }}
+				style={[
+					{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						width: '100%',
+						height: BACKDROP_HEIGHT,
+						zIndex: 0,
+					},
+					backdropAnimatedStyle,
+				]}
 				resizeMode="cover"
-				className="object-cover rounded-lg"
 				onError={(error) => {
 					console.warn(`Failed to load backdrop image for movie ${item.id}:`, error);
 				}}
-			>
-				<View className="absolute inset-0 bg-black/60" />
-			</ImageBackground>
+			/>
 
-			{/* Movie Info */}
+			{/* Animated Overlay */}
 			<Animated.View
-				className="px-4 -mt-20"
-				entering={FadeIn.delay(100).duration(500)}
-				exiting={FadeOut.duration(200)}
+				style={[
+					{
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						right: 0,
+						height: BACKDROP_HEIGHT,
+						backgroundColor: 'black',
+						zIndex: 1,
+					},
+					overlayAnimatedStyle,
+				]}
+			/>
+
+			{/* Scrollable Content */}
+			<Animated.ScrollView
+				className="flex-1 "
+				style={{ zIndex: 10 }}
+				onScroll={scrollHandler}
+				scrollEventThrottle={16}
+				showsVerticalScrollIndicator={false}
 			>
-				{/* Title */}
-				<Text
-					className="text-white text-4xl"
-					style={{
-						fontWeight: '500',
-						fontFamily: 'Manrope',
-					}}
-				>
-					{item?.title || 'Unknown Title'}
-				</Text>
+				{/* Spacer for backdrop */}
+				<View style={{ height: BACKDROP_HEIGHT - 80 }} />
 
-				{/* Movie Meta Info */}
-				<Text
-					className="text-gray-300 mt-1 text-xl"
-					style={{
-						fontWeight: '500',
-						fontFamily: 'Manrope',
-					}}
+				{/* Movie Info */}
+				<Animated.View
+					className="px-4 -mt-40 flex-1 rounded-t-3xl pt-6"
+					entering={FadeIn.delay(100).duration(500)}
+					exiting={FadeOut.duration(200)}
+					style={{ zIndex: 20 }}
 				>
-					{getYear()}, {getLanguage()}, {getRating()}{' '}
-					{getRating() !== 'N/A' && <FontAwesome name="star" size={14} color="#FFD700" />}
-				</Text>
+					<View className='flex items-center gap-y-4 justify-center w-full  '>
+						<Image
+							source={{
+								uri: item?.poster_path
+									? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+									: 'https://via.placeholder.com/150',
+							}}
+							style={{
+								width: 200,
+								height: 275,
+								borderRadius: 8,
 
-				{/* Genres */}
-				{genres.length > 0 && (
-					<View className="flex-row flex-wrap gap-2 mt-4">
-						{genres.map((genre, index) => (
-							<View
-								key={index}
-								className="bg-gray-800 px-3 py-1 rounded-full border-[1px] border-primary-base"
-							>
-								<Text
-									className="text-white text-sm"
-									style={{
-										fontWeight: '500',
-										fontFamily: 'Manrope',
-									}}
+							}}
+							resizeMode="cover"
+						/>
+						{/* Title */}
+						{/* <Text
+							className="text-white text-4xl text-center"
+							style={{
+								fontWeight: '500',
+								fontFamily: 'Manrope',
+							}}
+						>
+							{item?.title || 'Unknown Title'}
+						</Text> */}
+					</View>
+
+					{/* Movie Meta Info */}
+					<Text
+						className="text-gray-300 text-xl pt-4"
+						style={{
+							fontWeight: '500',
+							fontFamily: 'Manrope',
+						}}
+					>
+						{getYear()}, {getLanguage()}, {getRating()}{' '}
+						{getRating() !== 'N/A' && <FontAwesome name="star" size={14} color="#FFD700" />}
+					</Text>
+
+					{/* Genres */}
+					{genres.length > 0 && (
+						<View className="flex-row flex-wrap gap-2 mt-4">
+							{genres.map((genre, index) => (
+								<View
+									key={index}
+									className="bg-gray-800 px-3 py-1 rounded-full border-[1px] border-primary-base"
 								>
-									{genre}
-								</Text>
-							</View>
-						))}
-					</View>
-				)}
-
-				{/* Overview */}
-				{item?.overview && (
-					<View className="mt-4">
-						<Text className="text-white text-lg font-semibold mb-2">Overview</Text>
-						<Text className="text-gray-300 leading-6">{item.overview}</Text>
-					</View>
-				)}
-
-				{/* Action Buttons */}
-				<View className="flex-row gap-4 mt-6">
-					<Pressable
-						onPress={handleToggleFavorite}
-						className={`flex-1 py-3 rounded-xl items-center ${
-							isFavorite ? 'bg-red-600' : 'bg-gray-700'
-						}`}
-					>
-						<View className="flex-row items-center">
-							<FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={20} color="white" />
-							<Text className="text-white ml-2 font-medium">
-								{isFavorite ? 'Favorited' : 'Favorite'}
-							</Text>
-						</View>
-					</Pressable>
-
-					<Pressable
-						onPress={handleToggleWatchlist}
-						className={`flex-1 py-3 rounded-xl items-center ${
-							isInWatchlist ? 'bg-blue-600' : 'bg-gray-700'
-						}`}
-					>
-						<View className="flex-row items-center">
-							<FontAwesome
-								name={isInWatchlist ? 'bookmark' : 'bookmark-o'}
-								size={20}
-								color="white"
-							/>
-							<Text className="text-white ml-2 font-medium">
-								{isInWatchlist ? 'Watchlisted' : 'Watchlist'}
-							</Text>
-						</View>
-					</Pressable>
-				</View>
-
-				{/* Cast Section */}
-				<View className="mt-6">
-					<Text className="text-white text-lg font-semibold mb-2">Cast</Text>
-
-					{credits?.cast && credits.cast.length > 0 ? (
-						<ScrollView horizontal showsHorizontalScrollIndicator={false}>
-							{credits.cast.slice(0, 10).map((actor: any, index: number) => (
-								<View key={actor.id || index} className="items-center mr-4">
-									<Image
-										source={{
-											uri: actor.profile_path
-												? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-												: 'https://via.placeholder.com/100x100/666666/FFFFFF?text=No+Photo',
+									<Text
+										className="text-white text-sm"
+										style={{
+											fontWeight: '500',
+											fontFamily: 'Manrope',
 										}}
-										className="w-16 h-16 rounded-full"
-										onError={() => {
-											console.warn(`Failed to load profile image for actor: ${actor.name}`);
-										}}
-									/>
-									<Text className="text-white text-xs mt-2 text-center w-16" numberOfLines={2}>
-										{actor.name || 'Unknown'}
+									>
+										{genre}
 									</Text>
-									{actor.character && (
-										<Text className="text-gray-400 text-xs text-center w-16" numberOfLines={1}>
-											{actor.character}
-										</Text>
-									)}
 								</View>
 							))}
-						</ScrollView>
-					) : (
-						<Text className="text-gray-400 italic">No cast information available</Text>
+						</View>
 					)}
-				</View>
 
-				{/* Videos Section */}
-				<MovieVideos videosData={item?.videos} />
+					{/* Overview */}
+					{item?.overview && (
+						<View className="mt-4">
+							<Text className="text-white text-lg font-semibold mb-2">Overview</Text>
+							<Text className="text-gray-300 leading-6">{item.overview}</Text>
+						</View>
+					)}
 
-				{/* Watch Button */}
-				<Pressable className="bg-primary-accent mt-6 py-4 rounded-2xl items-center mb-8">
-					<Text className="text-white font-bold text-lg">Watch Movie</Text>
-				</Pressable>
-			</Animated.View>
-		</ScrollView>
+					{/* Action Buttons (shared component) */}
+					<CollectionButtons
+						id={item.id}
+						moviePayload={{
+							movieId: item.id,
+							title: item.title,
+							posterPath: item.poster_path || '',
+							backdropPath: item.backdrop_path || '',
+							releaseDate: item.release_date || '',
+						}}
+					/>
+
+					{/* Cast Section */}
+					<View className="mt-6">
+						<Text className="text-white text-lg font-semibold mb-2">Cast</Text>
+
+						{credits?.cast && credits.cast.length > 0 ? (
+							<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+								{credits.cast.slice(0, 10).map((actor: any, index: number) => (
+									<View key={actor.id || index} className="items-center mr-4">
+										<Image
+											source={{
+												uri: actor.profile_path
+													? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+													: 'https://via.placeholder.com/100x100/666666/FFFFFF?text=No+Photo',
+											}}
+											className="w-16 h-16 rounded-full"
+											onError={() => {
+												console.warn(`Failed to load profile image for actor: ${actor.name}`);
+											}}
+										/>
+										<Text className="text-white text-xs mt-2 text-center w-16" numberOfLines={2}>
+											{actor.name || 'Unknown'}
+										</Text>
+										{actor.character && (
+											<Text className="text-gray-400 text-xs text-center w-16" numberOfLines={1}>
+												{actor.character}
+											</Text>
+										)}
+									</View>
+								))}
+							</ScrollView>
+						) : (
+							<Text className="text-gray-400 italic">No cast information available</Text>
+						)}
+					</View>
+
+					{/* Videos Section */}
+					{item?.videos && <MovieVideos videosData={item.videos} />}
+
+					{/* Watch Button */}
+					{/* <Pressable className="bg-primary-accent mt-6 py-4 rounded-2xl items-center mb-8">
+						<Text className="text-white font-bold text-lg">Watch Movie</Text>
+					</Pressable> */}
+				</Animated.View>
+			</Animated.ScrollView>
+		</View>
 	);
 };
 

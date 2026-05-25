@@ -36,3 +36,13 @@ export type Movie = {
 	credits?: MovieCredits | undefined;
 	videos?: MovieVideosResponse;
 };
+
+export type moviePayload = {
+	$id?: string;
+	movieId: number;
+	title: string;
+	posterPath?: string;
+	backdropPath?: string;
+	releaseDate?: string;
+	
+}
