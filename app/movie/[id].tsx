@@ -9,7 +9,6 @@ const MovieDetailScreen = () => {
 	const { id } = useLocalSearchParams();
 
 	async function fetchMovieDetails() {
-		console.log('Fetching movie details from API...');
 		const url = new URL(`${MOVIE_DB_BASE_URL}/movie/${id}`);
 		url.searchParams.append('api_key', MOVIE_DB_API_KEY);
 		url.searchParams.append('language', 'en-US');
@@ -33,7 +32,6 @@ const MovieDetailScreen = () => {
 	const handleRetry = () => {
 		refetch();
 	};
-
 	if (error) {
 		console.log('Movie detail error:', error);
 	}

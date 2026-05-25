@@ -22,7 +22,6 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 WebBrowser.maybeCompleteAuthSession();
 
 
-
 export const GoogleLoginButton = ({ onPress, loading = false }: { onPress: () => void, loading?: boolean }) => {
 	const scale = useSharedValue(1);
 	const rotate = useSharedValue(0);
@@ -91,7 +90,7 @@ export async function loginWithGoogle() {
 
 		// Now your user should be logged in!
 		const user = await account.get();
-		console.log("✅ Logged in:", user);
+
 		return user;
 	} catch (error) {
 		console.error("Google OAuth login failed:", error);
@@ -109,14 +108,15 @@ const LogIn = () => {
 		setLoading(true);
 		try {
 			const redirectUrl = AuthSession.makeRedirectUri({ scheme: 'bewatcher', path: '/(tabs)/profile' });
-			const { createdSessionId, setActive } = await startSSOFlow({
+			const { createdSessionId, setActive, } = await startSSOFlow({
 				strategy: 'oauth_google',
 				redirectUrl,
 			});
+
 			if (createdSessionId) {
 				await setActive!({ session: createdSessionId });
 				router.replace('/(tabs)/profile');
-				console.log('Session created and set active:', createdSessionId);
+
 			} else {
 				console.error('Failed to create session');
 			}

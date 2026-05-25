@@ -23,6 +23,15 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "config": {
+        "networkSecurityConfig": "network_security_config"
+      },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.dev.psgurav.bewatcher",
@@ -77,10 +86,10 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "9998bf69-f055-4f88-95ba-854fa567aaf5",
+        "projectId": "5104f509-a596-4c22-8cc7-7fb6d0bdefd3",
         "appwriteProjectId": "65e89fbbcffd6aa4c4a4"
       }
     },
-    "owner": "dev.psgurav"
+    "owner": "prasad_dev04"
   }
 }

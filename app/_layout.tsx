@@ -5,22 +5,21 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
 import { persistor, store } from '@/store';
 import { useFonts } from 'expo-font';
-import { Redirect, Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import './global.css';
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo'
-import { tokenCache } from '@clerk/clerk-expo/token-cache'
-import { EXPO_CLERK_KEY } from '@/constants/config';
-
+import { ClerkProvider } from '@clerk/clerk-expo';
+import { tokenCache } from '@/lib/tokenCache';
+import { EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY } from '@/constants/config';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const router = useRouter();
+
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -96,16 +95,13 @@ export default function RootLayout() {
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
 				<QueryClientProvider client={queryClient}>
-					<ClerkProvider tokenCache={tokenCache} publishableKey={EXPO_CLERK_KEY}
+					<ClerkProvider tokenCache={tokenCache}
+						publishableKey={EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
 					>
 						<Stack screenOptions={{ animation: 'none' }}>
 							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 							<Stack.Screen name="movie/[id]" options={{ headerShown: false }} />
 							<Stack.Screen name="(auth)/login" options={{ headerShown: false }} />
-							<Stack.Screen name="(auth)/sign-up" options={{ headerShown: false }} />
-							{/* <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }} />
-							<Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }} />
-							<Stack.Screen name="not-found" options={{ title: 'Oops!' }} /> */}
 						</Stack>
 					</ClerkProvider>
 				</QueryClientProvider>

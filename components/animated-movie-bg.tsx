@@ -96,15 +96,6 @@ const EnhancedMovieCard = ({
 					className="rounded-t-xl"
 					resizeMode="cover"
 				/>
-
-				{/* Rating badge */}
-				{/* {movie.vote_average && (
-					<View className="absolute top-2 right-2 bg-yellow-500 rounded-full px-2 py-1">
-						<Text className="text-black text-xs font-bold">
-							{Math.round(movie.vote_average * 10) / 10}
-						</Text>
-					</View>
-				)} */}
 			</View>
 		</Animated.View>
 	);
@@ -239,7 +230,7 @@ export const AnimatedMovieBackground = () => {
 		<View className="flex-1 w-full bg-gradient-to-b from-black to-transparent overflow-hidden relative">
 			{/* Animated background rows */}
 			<TouchableOpacity
-				className="border border-white rounded-full p-2 absolute top-10 left-4 z-30 px-3"
+				className="border border-white rounded-full p-2 absolute top-16 left-4 z-30 px-3"
 				style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
 				<FontAwesome
 					name="arrow-left"
@@ -274,7 +265,7 @@ export const AnimatedMovieBackground = () => {
 			<View className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black via-black/50 to-transparent z-10" />
 
 			{/* Your content goes here */}
-			<View className="flex-1 items-center justify-end z-20 px-6 w-full relative bottom-48">
+			<View className="flex-1 items-center justify-end z-20 px-6 w-full relative bottom-36">
 				<Text className="text-white text-6xl font-bold text-start mb-4 " style={{ fontFamily: 'BricolageGrotesque', fontWeight: 500 }}>
 					Every Frame Deserves a Thought
 				</Text>

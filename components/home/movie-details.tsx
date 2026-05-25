@@ -1,14 +1,6 @@
 import { Genres } from '@/constants/data';
 import { Movie, moviePayload } from '@/constants/types';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-	addToFavourites,
-	addToWatchlist as addToWatchlistStore,
-	removeFromFavourites,
-	removeFromWatchlist as removeFromWatchlistStore,
-} from '@/store/slices/moviesSlice';
-
-import { addToWatchlist, removeFromWatchlist, setSession } from '@/lib/appwrite';
+import { useAppSelector } from '@/store/hooks';
 import { useAuth } from '@clerk/clerk-expo';
 import { useRouter } from 'expo-router';
 import { Alert } from 'react-native';
@@ -30,10 +22,11 @@ import Animated, {
 	useSharedValue,
 	interpolate,
 	Extrapolate,
+	withDecay,
 } from 'react-native-reanimated';
 import MovieVideos from './movie-videos';
 
-import { addToFavouritesList, removeFromFavouritesList } from '@/lib/appwrite/mutations';
+import CollectionButtons from '@/components/movies/collection-btns';
 
 const { width } = Dimensions.get('window');
 const BACKDROP_HEIGHT = 400;
@@ -158,14 +151,15 @@ interface MovieDetailsProps {
 }
 
 const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsProps) => {
-	const dispatch = useAppDispatch();
+	// dispatch is not used here; collection actions handled by CollectionButtons
 	const router = useRouter();
 	const { userId } = useAuth();
 	const [genres, setGenres] = React.useState<string[]>([]);
 
 	const { favourites, watchlist } = useAppSelector((state) => state.movies);
-	console.log(favourites, watchlist);
+
 	const scrollY = useSharedValue(0);
+
 	const scrollHandler = useAnimatedScrollHandler({
 		onScroll: (event) => {
 			scrollY.value = event.contentOffset.y;
@@ -179,6 +173,13 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 			[0, -BACKDROP_HEIGHT * 0.5],
 			Extrapolate.CLAMP
 		);
+
+		// Using withDecay for smoother parallax effect
+		// const translateY = withDecay({
+		// 	velocity: scrollY.value,
+		// 	clamp: [-BACKDROP_HEIGHT / 2, 0],
+		// 	rubberBandEffect: true,
+		// });
 
 		const scale = interpolate(
 			scrollY.value,
@@ -227,69 +228,7 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 
 	const credits = item.credits;
 
-	const isFavorite = favourites.find((f: moviePayload) => f.movieId === item.id);
-	const isInWatchlist = watchlist.find((w: moviePayload) => w.movieId === item.id);
-
-	const handleToggleFavorite = async () => {
-		if (!userId) {
-			router.push('/(auth)/login');
-			return;
-		}
-		const moviePayload: moviePayload = {
-			movieId: item.id,
-			title: item.title,
-			posterPath: item.poster_path || '',
-			backdropPath: item.backdrop_path || '',
-			releaseDate: item.release_date || '',
-		}
-		try {
-			if (isFavorite) {
-				await removeFromFavouritesList(String(userId), item.id);
-				dispatch(removeFromFavourites(item.id));
-				Alert.alert('Info', 'Removed from favourites.');
-			} else {
-				await addToFavouritesList(String(userId), moviePayload);
-				dispatch(addToFavourites(moviePayload));
-				Alert.alert('Info', 'Added to favourites.');
-			}
-		} catch (error) {
-			console.error('Error toggling favourites:', error);
-			Alert.alert('Error', 'Failed to update favourites. Please try again.');
-		} finally {
-			// Clear the session after the operation
-			setSession(null);
-		}
-	};
-
-	const handleToggleWatchlist = async () => {
-		if (!userId) {
-			router.push('/(auth)/login');
-			return;
-		}
-		// write payload variable for addToWatchlist function
-		const moviePayload: moviePayload = {
-			movieId: item.id,
-			title: item.title,
-			posterPath: item.poster_path || '',
-			backdropPath: item.backdrop_path || '',
-			releaseDate: item.release_date || '',
-		}
-		try {
-			if (isInWatchlist) {
-				await removeFromWatchlist(String(userId), item.id);
-				dispatch(removeFromWatchlistStore(String(item.id)));
-			} else {
-				await addToWatchlist(String(userId), moviePayload);
-				dispatch(addToWatchlistStore(moviePayload));
-			}
-		} catch (error) {
-			console.error('Error toggling watchlist:', error);
-			Alert.alert('Error', 'Failed to update watchlist. Please try again.');
-		} finally {
-			// Clear the session after the operation
-			await setSession(null);
-		}
-	};
+	// We'll use the shared CollectionButtons component for favourites/watchlist actions.
 
 	// Fallback image URLs
 	const backdropImage = item?.backdrop_path
@@ -318,7 +257,7 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 	};
 
 	return (
-		<View className="flex-1 bg-black">
+		<View className="flex-1 bg-black pb-6">
 			{/* Backdrop Image with Parallax Effect */}
 			<Animated.Image
 				source={{ uri: backdropImage }}
@@ -382,15 +321,15 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 									: 'https://via.placeholder.com/150',
 							}}
 							style={{
-								width: 150,
-								height: 225,
+								width: 200,
+								height: 275,
 								borderRadius: 8,
 
 							}}
 							resizeMode="cover"
 						/>
 						{/* Title */}
-						<Text
+						{/* <Text
 							className="text-white text-4xl text-center"
 							style={{
 								fontWeight: '500',
@@ -398,12 +337,12 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 							}}
 						>
 							{item?.title || 'Unknown Title'}
-						</Text>
+						</Text> */}
 					</View>
 
 					{/* Movie Meta Info */}
 					<Text
-						className="text-gray-300  text-xl"
+						className="text-gray-300 text-xl pt-4"
 						style={{
 							fontWeight: '500',
 							fontFamily: 'Manrope',
@@ -443,38 +382,17 @@ const MovieDetails = ({ item, loading = false, error, onRetry }: MovieDetailsPro
 						</View>
 					)}
 
-					{/* Action Buttons */}
-					<View className="flex-row gap-4 mt-6">
-						<Pressable
-							onPress={handleToggleFavorite}
-							className={`flex-1 py-3 rounded-xl items-center ${isFavorite ? 'bg-red-600' : 'bg-gray-700'
-								}`}
-						>
-							<View className="flex-row items-center">
-								<FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={20} color="white" />
-								<Text className="text-white ml-2 font-medium">
-									{isFavorite ? 'Favourites' : 'Favorite'}
-								</Text>
-							</View>
-						</Pressable>
-
-						<Pressable
-							onPress={handleToggleWatchlist}
-							className={`flex-1 py-3 rounded-xl items-center ${isInWatchlist ? 'bg-blue-600' : 'bg-gray-700'
-								}`}
-						>
-							<View className="flex-row items-center">
-								<FontAwesome
-									name={isInWatchlist ? 'bookmark' : 'bookmark-o'}
-									size={20}
-									color="white"
-								/>
-								<Text className="text-white ml-2 font-medium">
-									{isInWatchlist ? 'Watchlisted' : 'Watchlist'}
-								</Text>
-							</View>
-						</Pressable>
-					</View>
+					{/* Action Buttons (shared component) */}
+					<CollectionButtons
+						id={item.id}
+						moviePayload={{
+							movieId: item.id,
+							title: item.title,
+							posterPath: item.poster_path || '',
+							backdropPath: item.backdrop_path || '',
+							releaseDate: item.release_date || '',
+						}}
+					/>
 
 					{/* Cast Section */}
 					<View className="mt-6">

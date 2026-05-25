@@ -99,7 +99,6 @@ export const getUserFavourites = async (userId: string): Promise<FavouritesDocum
 				Query.orderDesc('addedDate'),
 			]
 		);
-		console.log("getUserFavourites response", response);
 		return response.documents as unknown as FavouritesDocument[];
 	} catch (error) {
 		console.error('Error fetching favourites:', error);

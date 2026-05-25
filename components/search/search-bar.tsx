@@ -4,9 +4,7 @@ import { View, Text, TextInput } from 'react-native'
 const SearchBar = () => {
 
 	const handleSearch = (query: string) => {
-		console.log('Searching for:', query);
 		const timeout = setTimeout(() => {
-			console.log('Search completed for:', query);
 		}, 500);
 		return () => clearTimeout(timeout);
 	}

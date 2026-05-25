@@ -5,12 +5,22 @@
 	"build": {
 		"development": {
 			"developmentClient": true,
-			"distribution": "internal"
+			"distribution": "internal",
+			"env": {
+				"EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c2F2aW5nLWZpbGx5LTY1LmNsZXJrLmFjY291bnRzLmRldiQ"
+			}
 		},
 		"preview": {
 			"distribution": "internal",
 			"android": {
-				"buildType": "apk" // 👈 force APK instead of AAB
+				"buildType": "apk",
+				"gradleCommand": ":app:assembleRelease",
+				"env": {
+					"ENABLE_NETWORK_SECURITY_CONFIG": "1"
+				}
+			},
+			"env": {
+				"EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c2F2aW5nLWZpbGx5LTY1LmNsZXJrLmFjY291bnRzLmRldiQ"
 			}
 		},
 		"production": {

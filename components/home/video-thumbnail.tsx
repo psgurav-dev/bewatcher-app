@@ -29,8 +29,10 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 	];
 
 	const handleImageError = () => {
-		console.log(
-			`Thumbnail failed for video ${videoKey}, trying fallback ${currentFallbackIndex + 1}`,
+		console.warn(
+			`[Preview] Thumbnail failed for video ${videoKey}:`,
+			`\n- Current URL: ${thumbnailOptions[currentFallbackIndex]}`,
+			`\n- Attempt: ${currentFallbackIndex + 1}/${thumbnailOptions.length}`,
 		);
 
 		if (currentFallbackIndex < thumbnailOptions.length - 1) {
@@ -38,14 +40,14 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 			setIsLoading(true);
 			setHasError(false);
 		} else {
-			// console.log(`All thumbnail options failed for video ${videoKey}`);
+			console.error(`[Preview] All thumbnail options failed for video ${videoKey}`);
 			setHasError(true);
 			setIsLoading(false);
 		}
 	};
 
 	const handleImageLoad = () => {
-		// console.log(`Thumbnail loaded successfully for video ${videoKey}`);
+
 		setIsLoading(false);
 		setHasError(false);
 	};
@@ -67,13 +69,17 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
 			</View>
 		);
 	}
-	console.log(thumbnailOptions[currentFallbackIndex])
+
 	return (
 		<View className={`relative bg-gray-800 rounded-lg ${className}`} style={style}>
 			<Image
 				source={{
 					uri: thumbnailOptions[currentFallbackIndex],
-					cache: 'default', // Enable caching
+					cache: 'force-cache', // Force caching for preview builds
+					headers: {
+						'Accept': 'image/webp,image/jpeg,image/png,image/*',
+						'User-Agent': 'Mozilla/5.0'
+					},
 				}}
 				className="w-full h-full rounded-lg"
 				resizeMode="cover"

@@ -7,7 +7,6 @@ export default function TabsLayout() {
 		{ name: "home", title: "Home", icon: "home" as const },
 		{ name: "search", title: "Search", icon: "search" as const },
 		{ name: "profile", title: "Profile", icon: "user" as const },
-
 	]
 
 	return (

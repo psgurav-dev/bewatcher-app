@@ -5,125 +5,14 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
-  interpolate
 } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { AnimatedList } from '../animated-movie-bg';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const GoogleLoginButton = ({ onPress, loading = false }: { onPress: () => void, loading?: boolean }) => {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    opacity: opacity.value,
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.95);
-    opacity.value = withTiming(0.8);
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1);
-    opacity.value = withTiming(1);
-  };
-
-  return (
-    <AnimatedPressable
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      disabled={loading}
-      style={animatedStyle}
-      className="w-full"
-    >
-      <View className="bg-white rounded-xl p-4 flex-row items-center justify-center shadow-lg border border-gray-200">
-        {loading ? (
-          <View className="w-6 h-6 mr-3">
-            <MaterialIcons name="hourglass-empty" size={24} color="#4285F4" />
-          </View>
-        ) : (
-          <Image
-            source={{
-              uri: 'https://developers.google.com/identity/images/g-logo.png'
-            }}
-            style={{ width: 24, height: 24, marginRight: 12 }}
-          />
-        )}
-        <Text
-          className="text-gray-700 font-semibold text-lg"
-          style={{ fontFamily: 'Manrope' }}
-        >
-          {loading ? 'Signing in...' : 'Continue with Google'}
-        </Text>
-      </View>
-    </AnimatedPressable>
-  );
-};
-
-// Alternative gradient version
-export const GradientGoogleButton = ({ onPress, loading = false }: { onPress: () => void, loading?: boolean }) => {
-  const scale = useSharedValue(1);
-  const rotate = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: scale.value },
-      { rotateZ: `${rotate.value}deg` }
-    ],
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.96);
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1);
-  };
-
-  return (
-    <AnimatedPressable
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      disabled={loading}
-      style={animatedStyle}
-      className="w-full"
-    >
-      <LinearGradient
-        colors={['#4285F4', '#34A853', '#FBBC05', '#EA4335']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        className="rounded-xl p-[2px]"
-      >
-        <View className="bg-white rounded-xl p-4 flex-row items-center justify-center">
-          {loading ? (
-            <View className="w-6 h-6 mr-3">
-              <MaterialIcons name="sync" size={24} color="#4285F4" />
-            </View>
-          ) : (
-            <Image
-              source={{
-                uri: 'https://developers.google.com/identity/images/g-logo.png'
-              }}
-              style={{ width: 24, height: 24, marginRight: 12 }}
-            />
-          )}
-          <Text
-            className="text-gray-800 font-bold text-lg"
-            style={{ fontFamily: 'Manrope' }}
-          >
-            {loading ? 'Signing in...' : 'Continue with Google'}
-          </Text>
-        </View>
-      </LinearGradient>
-    </AnimatedPressable>
-  );
-};
 
 // Dark themed version
 const DarkGoogleButton = ({ onPress, loading = false }: { onPress: () => void, loading?: boolean }) => {

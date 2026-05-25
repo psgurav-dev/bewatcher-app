@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from 'react-native'
-import { useEffect, useRef, useState } from 'react'
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { useState } from 'react'
+import Animated from 'react-native-reanimated';
 
 const data = [
 	{ name: "home", title: "Home", icon: "home" as const },

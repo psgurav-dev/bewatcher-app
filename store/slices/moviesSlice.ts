@@ -35,7 +35,7 @@ interface MoviesState {
 
 
 
-// ✅ Initial state
+// Initial state
 const initialState: MoviesState = {
   popularMovies: [],
   popularLoading: false,
@@ -90,7 +90,7 @@ export const fetchSearchQuery = createAsyncThunk(
 );
 
 
-// ✅ Async thunks
+// Async thunks
 export const fetchPopularMovies = createAsyncThunk(
   'movies/fetchPopular',
   async (page: number = 1, { rejectWithValue }) => {
@@ -102,7 +102,7 @@ export const fetchPopularMovies = createAsyncThunk(
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      // console.log("fetchPopularMovies", data)
+
       return data.results as Movie[];
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch popular movies');
@@ -120,7 +120,6 @@ export const fetchTrendingMovies = createAsyncThunk(
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      // console.log("fetchTrendingMovies", data);
       return data.results as Movie[];
     } catch (err: any) {
       return rejectWithValue(err.message || 'Failed to fetch trending movies');
@@ -128,14 +127,13 @@ export const fetchTrendingMovies = createAsyncThunk(
   }
 );
 
-// ✅ Fetch watchlist from Appwrite
+// Fetch watchlist from Appwrite
 export const fetchUserWatchlist = createAsyncThunk(
   'movies/fetchUserWatchlist',
   async (userId: string, { rejectWithValue }) => {
     try {
       if (!userId) throw new Error('No userId provided');
       const data = await getUserWatchlist(userId);
-      // console.log("fetchUserWatchlist", data)
       return data as moviePayload[];
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch watchlist');
@@ -149,7 +147,6 @@ export const fetchUserFavourites = createAsyncThunk(
 		try {
 			if (!userId) throw new Error('No userId provided');
 			const data = await getUserFavourites(userId);
-      // console.log("fetchUserFavourites", data)
 			return data as moviePayload[];
 		} catch (error: any) {
 			return rejectWithValue(error.message || 'Failed to fetch favourites');
@@ -159,7 +156,7 @@ export const fetchUserFavourites = createAsyncThunk(
 
 
 
-// ✅ Slice
+
 const moviesSlice = createSlice({
   name: 'movies',
   initialState,
@@ -193,8 +190,8 @@ const moviesSlice = createSlice({
       if (!exists) state.watchlist.push(action.payload);
     },
 
-		removeFromWatchlist: (state, action: PayloadAction<string>) => {
-			state.watchlist = state.watchlist.filter(w => w.$id !== action.payload);
+		removeFromWatchlist: (state, action: PayloadAction<number>) => {
+			state.watchlist = state.watchlist.filter(w => w.movieId !== action.payload);
 		},
 
     clearErrors: (state) => {
@@ -216,7 +213,7 @@ const moviesSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // ✅ Popular
+      
       .addCase(fetchPopularMovies.pending, (state) => {
         state.popularLoading = true;
         state.popularError = null;
@@ -230,7 +227,7 @@ const moviesSlice = createSlice({
         state.popularError = action.payload as string;
       })
 
-      // ✅ Trending
+
       .addCase(fetchTrendingMovies.pending, (state) => {
         state.trendingLoading = true;
         state.trendingError = null;
@@ -244,7 +241,7 @@ const moviesSlice = createSlice({
         state.trendingError = action.payload as string;
       })
 
-      // ✅ Watchlist (Appwrite)
+
       .addCase(fetchUserWatchlist.pending, (state) => {
         state.watchlistLoading = true;
         state.watchlistError = null;
@@ -258,7 +255,7 @@ const moviesSlice = createSlice({
         state.watchlistError = action.payload as string;
       })
 
-			// Favourites
+		
 			.addCase(fetchUserFavourites.pending, (state) => {
 				state.favouritesLoading = true;
 				state.favouritesError = null;
@@ -271,7 +268,8 @@ const moviesSlice = createSlice({
 				state.favouritesLoading = false;
 				state.favouritesError = action.payload as string;
 			})
-      // ✅ Search Movies
+
+
       .addCase(fetchSearchQuery.pending, (state) => {
         state.searchLoading = true;
         state.searchError = null;

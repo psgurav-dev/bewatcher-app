@@ -13,9 +13,9 @@ import Animated, {
 	useSharedValue,
 } from 'react-native-reanimated';
 
-const HEADER_MAX_PT = 8; // paddingTop when at top
-const HEADER_MIN_PT = 32; // paddingTop when collapsed
-const COLLAPSE_DISTANCE = 120; // how much scroll to collapse over
+const HEADER_MAX_PT = 8;
+const HEADER_MIN_PT = 32;
+const COLLAPSE_DISTANCE = 120;
 
 export default function HomeScreen() {
 	const dispatch = useAppDispatch();
@@ -35,7 +35,7 @@ export default function HomeScreen() {
 
 	const sectionsForGrid = [
 		{
-			title: 'Trending',
+			title: `Trending`,
 			data: [trendingMovies],
 		},
 		{

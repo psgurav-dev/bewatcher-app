@@ -13,7 +13,6 @@ const MovieVideos = ({ videosData }: { videosData: MovieVideosResponse | undefin
 	};
 
 	const openVideo = async (video: MovieVideo) => {
-		// console.log('Opening video:', video);
 		if (video.site === 'YouTube') {
 			const youtubeUrl = `https://www.youtube.com/watch?v=${video.key}`;
 			try {
